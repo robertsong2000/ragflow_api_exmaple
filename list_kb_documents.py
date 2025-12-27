@@ -233,17 +233,22 @@ class DocumentLister:
             print("=" * 120)
             print(f"\n总计: {len(docs)} 个文档\n")
 
-    def save_to_file(self, docs: List[Dict[str, Any]], output_file: str, format_type: str = 'json'):
+    def save_to_file(self, docs: List[Dict[str, Any]], output_file: str, format_type: str = 'json', brief: bool = False):
         """保存文档列表到文件
 
         Args:
             docs: 文档列表
             output_file: 输出文件路径
             format_type: 文件格式 (json, csv, txt)
+            brief: 是否仅保存文档名称
         """
         try:
             with open(output_file, 'w', encoding='utf-8') as f:
-                if format_type == 'json':
+                if brief:
+                    # 简洁模式：仅保存文档名称
+                    for doc in docs:
+                        f.write(f"{doc.get('name', 'N/A')}\n")
+                elif format_type == 'json':
                     import json
                     json.dump(docs, f, indent=2, ensure_ascii=False)
 
@@ -353,7 +358,7 @@ def main():
 
             # 保存到文件
             if args.output:
-                lister.save_to_file(docs, args.output, format_type=args.format)
+                lister.save_to_file(docs, args.output, format_type=args.format, brief=args.brief)
 
     except KeyboardInterrupt:
         print("\n\n⚠️  用户中断")

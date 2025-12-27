@@ -13,6 +13,7 @@
     python list_kb_documents.py --kb-name "<知识库名称>"
     python list_kb_documents.py --kb-id <知识库ID> --format csv
     python list_kb_documents.py --kb-id <知识库ID> --output documents.txt
+    python list_kb_documents.py --kb-id <知识库ID> --brief  # 仅输出文档名称
 
 配置说明:
     1. 默认读取 ragflow_config.json 配置文件
@@ -171,15 +172,22 @@ class DocumentLister:
         print(f"✅ 共获取 {len(all_docs)} 个文档\n")
         return all_docs
 
-    def display_documents(self, docs: List[Dict[str, Any]], format_type: str = 'table'):
+    def display_documents(self, docs: List[Dict[str, Any]], format_type: str = 'table', brief: bool = False):
         """显示文档列表
 
         Args:
             docs: 文档列表
             format_type: 显示格式 (table, json, csv)
+            brief: 是否仅输出文档名称
         """
         if not docs:
             print("⚠️  该知识库中没有文档")
+            return
+
+        if brief:
+            # 简洁模式：仅输出文档名称
+            for doc in docs:
+                print(doc.get('name', 'N/A'))
             return
 
         if format_type == 'json':
@@ -274,10 +282,12 @@ def main():
     )
 
     parser.add_argument('--kb-id', type=str, help='知识库ID')
-    parser.add_argument('--kb-name', type=str, help='知识库名称（支持模糊匹配）')
+    parser.add_argument('--kb-name', type=str, help='知识库名称(支持模糊匹配)')
     parser.add_argument('--list-kbs', action='store_true', help='列出所有知识库')
     parser.add_argument('--format', type=str, choices=['table', 'json', 'csv'], default='table',
                        help='输出格式 (默认: table)')
+    parser.add_argument('--brief', action='store_true',
+                       help='简洁模式: 仅输出文档名称,每行一个')
     parser.add_argument('--output', type=str, help='输出文件路径 (可选)')
     parser.add_argument('--config', type=str, default='ragflow_config.json',
                        help='RAGFlow配置文件路径 (默认: ragflow_config.json)')
@@ -339,7 +349,7 @@ def main():
         docs = lister.list_documents(kb_id)
 
         if docs:
-            lister.display_documents(docs, format_type=args.format)
+            lister.display_documents(docs, format_type=args.format, brief=args.brief)
 
             # 保存到文件
             if args.output:

@@ -70,6 +70,16 @@ python list_kb_documents.py --kb-id <知识库ID> --format json
 python list_kb_documents.py --kb-id <知识库ID> --format csv
 ```
 
+### 简洁模式（仅输出文档名称）
+
+```bash
+# 仅输出文档名称，每行一个
+python list_kb_documents.py --kb-id <知识库ID> --brief
+
+# 结合其他选项使用
+python list_kb_documents.py --kb-name "<知识库名称>" --brief
+```
+
 ### 导出到文件
 
 ```bash
@@ -103,12 +113,21 @@ python list_kb_documents.py --api-url "http://localhost:9380" --api-key "your-ke
 | `--kb-name` | 知识库名称（支持模糊匹配） |
 | `--list-kbs` | 列出所有知识库 |
 | `--format` | 输出格式（table/json/csv，默认：table） |
+| `--brief` | 简洁模式：仅输出文档名称，每行一个 |
 | `--output` | 输出文件路径 |
 | `--config` | 配置文件路径（默认：ragflow_config.json） |
 | `--api-url` | RAGFlow API 地址（覆盖配置文件） |
 | `--api-key` | RAGFlow API 密钥（覆盖配置文件） |
 
 ## 示例输出
+
+### 简洁模式（--brief）
+```
+示例文档.pdf
+技术文档.docx
+用户手册.pdf
+API文档.md
+```
 
 ### 表格格式
 ```
